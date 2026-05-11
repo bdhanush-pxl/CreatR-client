@@ -7,7 +7,7 @@ function ProtectedComponent({children}) {
     const navigate = useNavigate();
 
     if (!isAuthenticated) {
-        navigate('/');
+        navigate('/login');
         return null; // or a loading spinner
     }
   return (

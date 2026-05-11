@@ -8,6 +8,8 @@ import Header from './components/Header'
 import AuthContextProvider from './context/Auth/AuthContextProvider.jsx'
 import Dashboard from './pages/Dashboard'
 import ProtectedComponent from './components/ProtectedComponent.jsx'
+import Testimonials from './pages/Testimonials'
+import Feature from './pages/Feature'
 
 const App = () => {
 
@@ -20,8 +22,10 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/feed" element={<ProtectedComponent><Feed /></ProtectedComponent>} />
-        <Route path="/dashboard" element={<ProtectedComponent><Dashboard /></ProtectedComponent>} />
+        <Route path="/feed" element={<Feed />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/testimonials" element={<Testimonials />} />
+        <Route path="/feature" element={<Feature />} />
         </Routes>
       </AuthContextProvider>
       </BrowserRouter>

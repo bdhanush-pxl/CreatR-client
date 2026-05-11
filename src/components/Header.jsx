@@ -36,20 +36,14 @@ function Header(){
         </Link>
 
         {/* Navigation for landing page */}
-        {pathname === "/" && (
+        { (pathname === "/" || pathname === "/feed") && (
           <div className="hidden lg:flex space-x-6 flex-1 justify-center">
-            <a
-              href="#features"
-              className="text-white font-medium hover:text-purple-300"
-            >
+            <Link to="/feature" className="text-white font-medium hover:text-purple-300">
               Features
-            </a>
-            <a
-              href="#testimonials"
-              className="text-white font-medium hover:text-purple-300"
-            >
+            </Link>
+            <Link to="/testimonials" className="text-white font-medium hover:text-purple-300">
               Testimonials
-            </a>
+            </Link>
           </div>
         )}
 
