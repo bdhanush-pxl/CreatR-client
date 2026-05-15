@@ -1,4 +1,4 @@
-import React,{useState} from 'react'
+import React,{useState,useEffect} from 'react'
 import {
   LayoutDashboard,
   PenTool,
@@ -9,7 +9,7 @@ import {
   Settings,
 } from "lucide-react";
 
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation} from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { Badge } from "../components/ui/badge";
 import { cn } from "../lib/utils.js";
@@ -22,7 +22,7 @@ const sidebarItems = [
   },
   {
     title: "Create Post",
-    href: "/dashboard/create",
+    href: "/dashboard/createPost",
     icon: PenTool,
   },
   {
@@ -39,10 +39,33 @@ const sidebarItems = [
 
 const DashboardLayout = ({children}) => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [draft,setDraft] = useState(null);
     const { pathname } = useLocation();
-    const navigate = useNavigate();
+    const API_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
 
     const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+
+    const fetchUserDraft = async() => {
+      try{
+        const response = await fetch(API_URL+'/api/posts/draft', {
+          method: 'GET',
+          credentials: 'include',
+        });
+        if (!response.ok) {
+      throw new Error(`Failed to fetch drafts: ${response.status}`);
+    }
+        const data = await response.json();
+        setDraft(data);
+        // Handle the draft data as needed
+      } catch (error) {
+        console.error("Error fetching user draft:", error);
+        setDraft(null); // Clear draft state on error
+      }
+    }
+
+    useEffect(() => {
+      fetchUserDraft();
+    }, []);
 
   return (
     <div className="min-h-screen bg-slate-900 text-white">
@@ -115,7 +138,7 @@ const DashboardLayout = ({children}) => {
                   <span className="font-medium">{item.title}</span>
 
                   {/* Badge for Create Post if draft exists */}
-                  {item.title === "Create Post" && true && (
+                  {item.title === "Create Post" && draft && (
                     <Badge
                       variant="secondary"
                       className="ml-auto text-xs bg-orange-500/20 text-orange-300 border-orange-500/30"

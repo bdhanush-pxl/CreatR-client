@@ -17,6 +17,7 @@ import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";
 import { Label } from "../../../components/ui/label";
 import { useAuth } from '../../../context/Auth/AuthContext'
+import { useNavigate } from 'react-router';
 
 const Settings = () => {
   const { user } = useAuth();
@@ -25,9 +26,20 @@ const Settings = () => {
   const [username, setUsername] = useState('');
   const [error, setError] = useState('');
   const API_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
+  const navigate = useNavigate();
 
   // Set the current username on mount
   useEffect(() => {
+    if(!user){
+      toast.error('User not authenticated', {
+        description: 'Please log in to update your username.',
+        icon: <AlertCircle className="w-5 h-5" />
+      });
+      setTimeout(() => {
+        navigate('/login');
+      },2000)
+      return;
+    }
     if (user?.username) {
       setCurrentUsername(user.username);
     }
@@ -66,6 +78,15 @@ const Settings = () => {
     if (validationError) {
       setError(validationError);
       console.log('Validation error:', validationError);
+      return;
+    }
+
+    //check if user is not logged in for some reason
+    if(!user || currentUsername===''){
+      toast.error('User not authenticated', {
+        description: 'Please log in to update your username.',
+        icon: <AlertCircle className="w-5 h-5" />
+      });
       return;
     }
 
