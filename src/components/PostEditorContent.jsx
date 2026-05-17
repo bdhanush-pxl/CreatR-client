@@ -1,6 +1,14 @@
-import React from 'react'
+import React, { useState } from 'react'
 import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
+import { Button } from "./ui/button";
+import { ImageIcon } from "lucide-react";
+import { Input } from "./ui/input";
+import { Wand2, Sparkles, Plus, Minus } from "lucide-react";
+import { BarLoader } from "react-spinners";
+import { toast } from "sonner";
+
+
 
 const quillConfig = {
   modules: {
@@ -44,6 +52,17 @@ const quillConfig = {
 };
 
 const PostEditorContent = ({ form, setQuillRef, onImageUpload }) => {
+  const {
+    register,
+    watch,
+    setValue,
+    formState: { errors },
+  } = form;
+
+  const watchedValues = watch();
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [isImproving, setIsImproving] = useState(false);
+
   const getQuillModules = () => ({
     ...quillConfig.modules,
     toolbar: {
@@ -52,14 +71,187 @@ const PostEditorContent = ({ form, setQuillRef, onImageUpload }) => {
     },
   });
 
+  const handleAI = async (type, improvementType = null) => {
+    const { title, content, category, tags } = watchedValues;
+
+    if (type === "generate") {
+      if (!title?.trim())
+        return toast.error("Please add a title before generating content");
+      if (
+        content &&
+        content !== "" &&
+        content !== "<p></p>" &&
+        content !== "<p><br></p>" &&
+        !window.confirm("This will replace your existing content. Continue?")
+      )
+        return;
+      setIsGenerating(true);
+    }
+    else {
+      if (!content || content === "" || content === "<p></p>" || content === "<p><br></p>")
+        return toast.error("Please add some content before improving it");
+      setIsImproving(true);
+    }
+    try {
+      const API_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
+
+      let response;
+      if (type === "generate") {
+        response = await fetch(API_URL + '/api/ai/generate-blog', {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title, category, tags: tags || [] }),
+        });
+      } else {
+        response = await fetch(API_URL + '/api/ai/improve-content', {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ currentContent: content, improvementType }),
+        });
+      }
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.message || `Failed to ${type} content`);
+      }
+
+      if (result.data && result.data.content) {
+        setValue("content", result.data.content);
+        toast.success(
+          `Content ${type === "generate" ? "generated" : improvementType + "d"} successfully!`
+        );
+      } else {
+        toast.error("No content received from AI");
+      }
+    } catch (error) {
+      console.error(`AI ${type} error:`, error);
+      toast.error(error.message || `Failed to ${type} content. Please try again.`);
+    } finally {
+      type === "generate" ? setIsGenerating(false) : setIsImproving(false);
+    }
+  }
+
+  const hasTitle = watchedValues.title?.trim();
+  const hasContent =
+    watchedValues.content &&
+    watchedValues.content.trim() !== "" &&
+    watchedValues.content.trim() !== "<p></p>" &&
+    watchedValues.content.trim() !== "<p><br></p>";
+
   return (
     <>
       <main className="max-w-4xl mx-auto px-6 py-8">
         <div className="space-y-5">
+
+          {/* Featured Image */}
+          {watchedValues.featuredImage ? (
+            <div className="relative group">
+              <img
+                src={watchedValues.featuredImage}
+                alt="Featured"
+                className="w-full h-80 object-cover rounded-xl"
+              />
+              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center space-x-3">
+                <Button
+                  onClick={() => onImageUpload("featured")}
+                  variant="secondary"
+                  size="sm"
+                >
+                  Change Image
+                </Button>
+                <Button
+                  onClick={() => setValue("featuredImage", "")}
+                  variant="destructive"
+                  size="sm"
+                >
+                  Remove
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <button
+              onClick={() => onImageUpload("featured")}
+              className="w-full h-36 border-2 border-dashed border-slate-600 rounded-xl flex flex-col items-center justify-center space-y-4 hover:border-slate-500 transition-colors group"
+            >
+              <ImageIcon className="h-12 w-12 text-slate-400 group-hover:text-slate-300" />
+              <div className="text-center">
+                <p className="text-slate-300 text-lg font-medium">
+                  Add a featured image
+                </p>
+                <p className="text-slate-500 text-sm mt-1">
+                  Upload and transform with AI
+                </p>
+              </div>
+            </button>
+          )}
+
+          {/* Title */}
           <div>
+            <Input
+              {...register("title")}
+              placeholder="Post title..."
+              className="border-0 text-4xl font-bold bg-transparent placeholder:text-slate-500 text-white p-0 h-auto focus-visible:ring-0 focus-visible:ring-offset-0"
+              style={{ fontSize: "2.5rem", lineHeight: "1.2" }}
+            />
+            {errors.title && (
+              <p className="text-red-400 mt-2">{errors.title.message}</p>
+            )}
+          </div>
+
+          {/* AI Tools */}
+          <div>
+            {!hasContent ? (
+              <Button
+                onClick={() => handleAI("generate")}
+                disabled={!hasTitle || isGenerating || isImproving}
+                variant="outline"
+                size="sm"
+                className="border-purple-500 text-purple-400 hover:bg-purple-500 hover:text-white disabled:opacity-50 w-full"
+              >
+                <Wand2 className="h-4 w-4 mr-2" />
+                Generate Content with AI
+              </Button>
+            ) : (
+              <div className="grid grid-cols-3 w-full gap-2">
+                {[
+                  { type: "enhance", icon: Sparkles, color: "green" },
+                  { type: "expand", icon: Plus, color: "blue" },
+                  { type: "simplify", icon: Minus, color: "orange" },
+                ].map(({ type, icon: Icon, color }) => (
+                  <Button
+                    key={type}
+                    onClick={() => handleAI("improve", type)}
+                    disabled={isGenerating || isImproving}
+                    variant="outline"
+                    size="sm"
+                    className={`border-${color}-500 text-${color}-400 hover:bg-${color}-500 hover:text-white disabled:opacity-50`}
+                  >
+                    <Icon className="h-4 w-4 mr-2" />
+                    AI {type.charAt(0).toUpperCase() + type.slice(1)}
+                  </Button>
+                ))}
+              </div>
+            )}
+            {!hasTitle && (
+              <p className="text-xs text-slate-400 w-full pt-2">
+                Add a title to enable AI content generation
+              </p>
+            )}
+          </div>
+
+          {(isGenerating || isImproving) && (
+            <BarLoader width={"95%"} color="#D8B4FE" />
+          )}
+
+          <div className="prose prose-lg max-w-none">
             <ReactQuill
               ref={setQuillRef}
               theme="snow"
+              value={watchedValues.content}
+              onChange={(content) => setValue("content", content)}
               modules={getQuillModules()}
               formats={quillConfig.formats}
               placeholder="Tell your story... or use AI to generate content!"
@@ -69,6 +261,9 @@ const PostEditorContent = ({ form, setQuillRef, onImageUpload }) => {
                 lineHeight: "1.7",
               }}
             />
+            {errors.content && (
+              <p className="text-red-400 mt-2">{errors.content.message}</p>
+            )}
           </div>
         </div>
       </main>
