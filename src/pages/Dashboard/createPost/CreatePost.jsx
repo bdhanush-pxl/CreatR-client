@@ -9,6 +9,8 @@ const CreatePost = () => {
     const { user } = useAuth();
     const API_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
     const [draft, setDraft] = useState(null);
+    const [isFetchingDraft, setIsFetchingDraft] = useState(true);
+
     const fetchUserDraft = async () => {
         try {
             const response = await fetch(API_URL + '/api/posts/draft', {
@@ -19,17 +21,30 @@ const CreatePost = () => {
                 throw new Error(`Failed to fetch drafts: ${response.status}`);
             }
             const data = await response.json();
-            setDraft(data);
+            setDraft(data.data);
             // Handle the draft data as needed
         } catch (error) {
             console.error("Error fetching user draft:", error);
             setDraft(null); // Clear draft state on error
+        } finally {
+            setIsFetchingDraft(false);
         }
     }
 
     useEffect(() => {
         fetchUserDraft();
     }, []);
+
+    // Don't render PostEditor until we know whether a draft exists.
+    // useForm's defaultValues are only read on first mount, so rendering
+    // with null and then updating later would lose the draft data.
+    if (isFetchingDraft) {
+        return (
+            <div className="min-h-screen bg-slate-900 flex items-center justify-center">
+                <Loader2 className="h-8 w-8 animate-spin text-purple-400" />
+            </div>
+        );
+    }
 
     if (!user) {
         return (

@@ -55,7 +55,7 @@ const DashboardLayout = ({children}) => {
       throw new Error(`Failed to fetch drafts: ${response.status}`);
     }
         const data = await response.json();
-        setDraft(data);
+        setDraft(data.data);
         // Handle the draft data as needed
       } catch (error) {
         console.error("Error fetching user draft:", error);
@@ -65,6 +65,17 @@ const DashboardLayout = ({children}) => {
 
     useEffect(() => {
       fetchUserDraft();
+
+      // PostEditor fires this event after every successful save so the
+      // sidebar badge appears without a page reload.
+      window.addEventListener("draftSaved", fetchUserDraft);
+      const clearDraft = () => setDraft(null);
+      window.addEventListener("draftPublished", clearDraft);
+      return () => {
+        window.removeEventListener("draftSaved", fetchUserDraft);
+        window.removeEventListener("draftPublished", clearDraft);
+      };
+
     }, []);
 
   return (
