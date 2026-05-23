@@ -227,7 +227,7 @@ const PostEditorContent = ({ form, setQuillRef, onImageUpload }) => {
                     disabled={isGenerating || isImproving}
                     variant="outline"
                     size="sm"
-                    className={`border-${color}-500 text-${color}-400 hover:bg-${color}-500 hover:text-white disabled:opacity-50`}
+                    className={`border-${color}-500 text-${color}-400 hover:bg-white hover:text-black disabled:opacity-50 cursor-pointer`}
                   >
                     <Icon className="h-4 w-4 mr-2" />
                     AI {type.charAt(0).toUpperCase() + type.slice(1)}

@@ -6,6 +6,7 @@ import { useNavigate } from "react-router";
 import PostEditorHeader from "./PostEditorHeader";
 import PostEditorContent from "./PostEditorContent";
 import PostEditorSettings from "./PostEditorSettings";
+import ImageUploadModal from "./ImageUploadModal";
 import { toast } from "sonner";
 
 
@@ -25,6 +26,7 @@ const PostEditor = ({ initialData = null, mode = "create" }) => {
     const [quillRef, setQuillRef] = useState(null);
     const [isCreateLoading, setIsCreateLoading] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
+    const [savedSelection, setSavedSelection] = useState(null);
 
     // Tracks the last saved version so the header Draft badge updates
     // immediately after the first save without a page reload.
@@ -52,7 +54,6 @@ const PostEditor = ({ initialData = null, mode = "create" }) => {
 
     const handleSave = (silent = false) => {
         handleSubmit((data) => onSubmit(data, "draft", silent))();
-        toast.success("Draft saved!");
     };
 
     // Auto-save for drafts
@@ -66,7 +67,23 @@ const PostEditor = ({ initialData = null, mode = "create" }) => {
         }, 30000);
 
         return () => clearInterval(autoSave);
-    }, [watchedValues.title, watchedValues.content,mode, handleSave]);
+    }, [watchedValues.title, watchedValues.content, mode, handleSave]);
+
+    // Handle image selection
+    const handleImageSelect = (imageData) => {
+        if (imageModalType === "featured") {
+            setValue("featuredImage", imageData.url);
+            toast.success("Featured image added!");
+        } else if (imageModalType === "content" && quillRef) {
+            const quill = quillRef.getEditor();
+            const index = savedSelection?.index ?? quill.getSelection()?.index ?? quill.getLength();
+            quill.insertEmbed(index, "image", imageData.url);
+            quill.setSelection(index + 1);
+            toast.success("Image inserted!");
+            setSavedSelection(null);
+        }
+        setIsImageModalOpen(false);
+    };
 
     // Submit handler
     const onSubmit = async (data, action, silent = false) => {
@@ -123,7 +140,7 @@ const PostEditor = ({ initialData = null, mode = "create" }) => {
                 }));
                 window.dispatchEvent(new CustomEvent("draftSaved"));
             }
-            else if(action === "publish"){
+            else if (action === "publish") {
                 window.dispatchEvent(new CustomEvent("draftPublished"));
             }
 
@@ -196,6 +213,21 @@ const PostEditor = ({ initialData = null, mode = "create" }) => {
         }
     }
 
+    const handleOpenImageModal = (type) => {
+        setImageModalType(type);
+
+        // Save the cursor position before opening modal
+        if (type === "content" && quillRef) {
+            const quill = quillRef.getEditor();
+            const range = quill.getSelection();
+            if (range) {
+                setSavedSelection(range); // Save selection position
+            }
+        }
+
+        setIsImageModalOpen(true);
+    };
+
 
     return (
         <div className="min-h-screen bg-slate-900 text-white">
@@ -212,10 +244,7 @@ const PostEditor = ({ initialData = null, mode = "create" }) => {
 
             {/* Main editor content goes here */}
             <PostEditorContent form={form} setQuillRef={setQuillRef}
-                onImageUpload={(type) => {
-                    setImageModalType(type);
-                    setIsImageModalOpen(true);
-                }} />
+                onImageUpload={handleOpenImageModal} />
 
             {/* Settings */}
             <PostEditorSettings
@@ -223,6 +252,18 @@ const PostEditor = ({ initialData = null, mode = "create" }) => {
                 onClose={() => setIsSettingsOpen(false)}
                 form={form}
                 mode={mode}
+            />
+
+            {/* Image Upload Modal */}
+            <ImageUploadModal
+                isOpen={isImageModalOpen}
+                onClose={() => setIsImageModalOpen(false)}
+                onImageSelect={handleImageSelect}
+                title={
+                    imageModalType === "featured"
+                        ? "Upload Featured Image"
+                        : "Insert Image"
+                }
             />
         </div>
     )

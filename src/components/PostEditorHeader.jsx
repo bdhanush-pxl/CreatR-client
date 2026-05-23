@@ -96,12 +96,13 @@ const PostEditorHeader = ({ mode, initialData, isPublishing, onSave, onPublish, 
                                     Publish
                                 </Button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" className="w-48">
+                            <DropdownMenuContent align="end" className="w-48 bg-black border-slate-700">
                                 <DropdownMenuItem
                                     onClick={() => {
                                         onPublish();
                                         setIsPublishMenuOpen(false);
                                     }}
+                                    className="hover:bg-slate-800 cursor-pointer"
                                 >
                                     <Send className="h-4 w-4 mr-2" />
                                     Publish now
@@ -111,6 +112,7 @@ const PostEditorHeader = ({ mode, initialData, isPublishing, onSave, onPublish, 
                                         onSchedule();
                                         setIsPublishMenuOpen(false);
                                     }}
+                                    className="hover:bg-slate-800 cursor-pointer"
                                 >
                                     <Calendar className="h-4 w-4 mr-2" />
                                     Schedule for later
