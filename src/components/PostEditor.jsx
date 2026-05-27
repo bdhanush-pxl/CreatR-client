@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect , useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from 'zod';
@@ -26,7 +26,7 @@ const PostEditor = ({ initialData = null, mode = "create" }) => {
     const [quillRef, setQuillRef] = useState(null);
     const [isCreateLoading, setIsCreateLoading] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
-    const [savedSelection, setSavedSelection] = useState(null);
+    // const [savedSelection, setSavedSelection] = useState(null);
 
     // Tracks the last saved version so the header Draft badge updates
     // immediately after the first save without a page reload.
@@ -76,11 +76,13 @@ const PostEditor = ({ initialData = null, mode = "create" }) => {
             toast.success("Featured image added!");
         } else if (imageModalType === "content" && quillRef) {
             const quill = quillRef.getEditor();
-            const index = savedSelection?.index ?? quill.getSelection()?.index ?? quill.getLength();
+            // const index = savedSelection?.index ?? quill.getSelection()?.index ?? quill.getLength();
+            const range = quill.getSelection();
+            const index = range ? range.index : quill.getLength();
             quill.insertEmbed(index, "image", imageData.url);
             quill.setSelection(index + 1);
             toast.success("Image inserted!");
-            setSavedSelection(null);
+            // setSavedSelection(null);
         }
         setIsImageModalOpen(false);
     };
@@ -213,20 +215,10 @@ const PostEditor = ({ initialData = null, mode = "create" }) => {
         }
     }
 
-    const handleOpenImageModal = (type) => {
+    const handleOpenImageModal = useCallback((type) => {
         setImageModalType(type);
-
-        // Save the cursor position before opening modal
-        if (type === "content" && quillRef) {
-            const quill = quillRef.getEditor();
-            const range = quill.getSelection();
-            if (range) {
-                setSavedSelection(range); // Save selection position
-            }
-        }
-
         setIsImageModalOpen(true);
-    };
+    }, []);
 
 
     return (

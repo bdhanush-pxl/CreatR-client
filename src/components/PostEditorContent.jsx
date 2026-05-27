@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState ,useMemo } from 'react'
 import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
 import { Button } from "./ui/button";
@@ -63,13 +63,16 @@ const PostEditorContent = ({ form, setQuillRef, onImageUpload }) => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isImproving, setIsImproving] = useState(false);
 
-  const getQuillModules = () => ({
+  // Memoized so the modules object reference stays stable across re-renders.
+  // Without this, every keystroke triggers a re-render → new modules object
+  // → Quill reinitializes its toolbar → DOM shifts → page scrolls up.
+  const quillModules = useMemo(() => ({
     ...quillConfig.modules,
     toolbar: {
       ...quillConfig.modules.toolbar,
       handlers: { image: () => onImageUpload("content") },
     },
-  });
+  }), [onImageUpload]);
 
   const handleAI = async (type, improvementType = null) => {
     const { title, content, category, tags } = watchedValues;
@@ -252,7 +255,7 @@ const PostEditorContent = ({ form, setQuillRef, onImageUpload }) => {
               theme="snow"
               value={watchedValues.content}
               onChange={(content) => setValue("content", content)}
-              modules={getQuillModules()}
+              modules={quillModules}
               formats={quillConfig.formats}
               placeholder="Tell your story... or use AI to generate content!"
               style={{
