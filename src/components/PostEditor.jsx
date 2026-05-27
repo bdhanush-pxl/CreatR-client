@@ -95,7 +95,7 @@ const PostEditor = ({ initialData = null, mode = "create" }) => {
                 content: data.content,
                 category: data.category || undefined,
                 tags: data.tags,
-                featuredImage: data.featuredImage || undefined,
+                featuredImage: data.featuredImage || null,
                 status: action === "publish" ? "published" : "draft",
                 scheduledFor: data.scheduledFor
                     ? new Date(data.scheduledFor).getTime()
