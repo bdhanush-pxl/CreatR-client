@@ -155,7 +155,7 @@ const PostEditorContent = ({ form, setQuillRef, onImageUpload }) => {
               <img
                 src={watchedValues.featuredImage}
                 alt="Featured"
-                className="w-full h-80 object-cover rounded-xl"
+                className="w-full h-80 object-contain rounded-xl"
               />
               <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center space-x-3">
                 <Button
