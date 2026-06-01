@@ -14,6 +14,7 @@ import DashboardLayout from './layouts/DashboardLayout'
 import Settings from './pages/Dashboard/Settings/Settings'
 import CreatePost from './pages/Dashboard/createPost/CreatePost'
 import MyPosts from './pages/Dashboard/MyPosts/MyPosts'
+import EditPost from './pages/Dashboard/MyPosts/EditPost'
 import { Toaster } from "sonner";
 
 const App = () => {
@@ -35,6 +36,7 @@ const App = () => {
         <Route path="/feature" element={<Feature />} />
         <Route path="/dashboard/createPost" element={<DashboardLayout><CreatePost /></DashboardLayout>} />
         <Route path="/dashboard/posts" element={<DashboardLayout><MyPosts /></DashboardLayout>} />
+        <Route path="/dashboard/posts/:id" element={<DashboardLayout><EditPost /></DashboardLayout>} />
         </Routes>
       </AuthContextProvider>
       </BrowserRouter>
