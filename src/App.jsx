@@ -15,6 +15,8 @@ import Settings from './pages/Dashboard/Settings/Settings'
 import CreatePost from './pages/Dashboard/createPost/CreatePost'
 import MyPosts from './pages/Dashboard/MyPosts/MyPosts'
 import EditPost from './pages/Dashboard/MyPosts/EditPost'
+import PublicProfilePage from './pages/Profile/PublicProfilePage'
+import SinglePostPage from './pages/Profile/SinglePostPage'
 import { Toaster } from "sonner";
 
 const App = () => {
@@ -37,6 +39,8 @@ const App = () => {
         <Route path="/dashboard/createPost" element={<DashboardLayout><CreatePost /></DashboardLayout>} />
         <Route path="/dashboard/posts" element={<DashboardLayout><MyPosts /></DashboardLayout>} />
         <Route path="/dashboard/posts/:id" element={<DashboardLayout><EditPost /></DashboardLayout>} />
+        <Route path="/:username" element={<PublicProfilePage />} />
+        <Route path="/:username/:postId" element={<SinglePostPage />} />
         </Routes>
       </AuthContextProvider>
       </BrowserRouter>
