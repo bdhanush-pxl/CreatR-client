@@ -66,24 +66,9 @@ const PublicProfilePage = ({ params }) => {
       }
     };
 
-    const checkIfFollowing = async () => {
-      try {
-        const followingId = friend?._id;
-        const response = await fetch(API_URL + `/api/follow/isFollowing/${followingId}`, {
-          method: 'GET',
-          credentials: 'include',
-        });
-        const data = await response.json();
-        setIsFollowing(data.data);
-      } catch (error) {
-        console.error("Error checking follow status:", error);
-      }
-    }
-
     fetchUser();
     fetchPosts();
     fetchFollowerCount();
-    checkIfFollowing();
   }, [username]);
 
   useEffect(() => {
