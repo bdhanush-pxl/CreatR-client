@@ -9,7 +9,7 @@ function Header(){
     const { user, isAuthenticated, isLoading, logout } = useAuth();
     const { pathname } = useLocation();
     const navigate = useNavigate();
-    console.log(pathname)
+    console.log(user)
 
     // Redirect authenticated users from landing page to feed
     useEffect(() => {
@@ -53,27 +53,27 @@ function Header(){
             <>
               {pathname === "/feed" && (
                 <Link to="/dashboard">
-                  <Button variant="outline" size="sm" className="hidden sm:flex">
+                  <Button variant="outline" size="sm" className="hidden sm:flex hover:cursor-pointer hover:text-purple-300">
                     <LayoutDashboard className="h-4 w-4" />
                     <span className="hidden md:inline ml-2">Dashboard</span>
                   </Button>
                 </Link>
               )}
 
-              <Button variant="ghost" size="sm" onClick={logout}>
+              <Button className="hover:cursor-pointer hover:text-purple-300" variant="ghost" size="sm" onClick={logout}>
                 Logout
               </Button>
             </>
           ) : (
             <>
               <Link to="/login">
-                <Button variant="glass" size="sm">
+                <Button variant="glass" size="sm" className="hover:cursor-pointer hover:text-purple-300 ">
                   Sign In
                 </Button>
               </Link>
 
               <Link to="/register">
-                <Button variant="primary" size="sm">
+                <Button variant="primary" size="sm" className="hover:cursor-pointer hover:text-purple-300">
                   Get Started
                 </Button>
               </Link>

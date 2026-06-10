@@ -273,7 +273,7 @@ const SinglePostPage = () => {
           </div>
           {/* Post Content */}
           <div
-            className="prose prose-lg max-w-none prose-invert prose-purple"
+            className="prose prose-lg max-w-none prose-invert prose-purple break-words overflow-x-auto"
             dangerouslySetInnerHTML={{ __html: post.content }}
           />
           <div className="flex items-center gap-6 pt-4 border-t border-slate-800">
