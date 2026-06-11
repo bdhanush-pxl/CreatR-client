@@ -35,18 +35,6 @@ function Header(){
           />
         </Link>
 
-        {/* Navigation for landing page */}
-        { (pathname === "/" || pathname === "/feed") && (
-          <div className="hidden lg:flex space-x-6 flex-1 justify-center">
-            <Link to="/feature" className="text-white font-medium hover:text-purple-300">
-              Features
-            </Link>
-            <Link to="/testimonials" className="text-white font-medium hover:text-purple-300">
-              Testimonials
-            </Link>
-          </div>
-        )}
-
         {/* Auth Actions */}
         <div className="flex items-center gap-2 sm:gap-3">
           {isAuthenticated ? (
