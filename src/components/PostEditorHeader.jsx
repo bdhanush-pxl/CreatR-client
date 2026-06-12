@@ -14,24 +14,24 @@ const PostEditorHeader = ({ mode, initialData, isPublishing, onSave, onPublish, 
     const isEdit = mode === "edit";
 
     return (
-        <header className="sticky top-0 bg-slate-900/80 backdrop-blur-md border-b border-slate-800">
-            <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+        <header className="sticky top-0 bg-slate-900/80 backdrop-blur-md border-b border-slate-800 z-40">
+            <div className="max-w-5xl mx-auto px-3 sm:px-6 py-3 sm:py-4 flex items-center justify-between gap-2">
                 {/* Left */}
-                <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-2 sm:space-x-4 min-w-0">
                     <Button
                         variant="ghost"
                         size="sm"
                         onClick={onBack}
-                        className="text-slate-400 hover:text-white"
+                        className="text-slate-400 hover:text-white text-xs sm:text-sm px-2 sm:px-3"
                     >
                         <ArrowLeft className="h-4 w-4 mr-2" />
-                        Back
+                        <span className="hidden sm:inline ml-1">Back</span>
                     </Button>
 
                     {isDraft && (
                         <Badge
                             variant="secondary"
-                            className="bg-orange-500/20 text-orange-300 border-orange-500/30"
+                            className="bg-orange-500/20 text-orange-300 border-orange-500/30 text-xs"
                         >
                             Draft
                         </Badge>
@@ -39,12 +39,12 @@ const PostEditorHeader = ({ mode, initialData, isPublishing, onSave, onPublish, 
                 </div>
 
                 {/* Right */}
-                <div className="flex items-center space-x-3">
+                <div className="flex items-center space-x-2 sm:space-x-3 flex-shrink-0">
                     <Button
                         variant="ghost"
                         size="sm"
                         onClick={onSettingsOpen}
-                        className="text-slate-400 hover:text-white"
+                        className="text-slate-400 hover:text-white p-1.5 sm:p-2"
                     >
                         <Settings className="h-4 w-4" />
                     </Button>
@@ -55,7 +55,7 @@ const PostEditorHeader = ({ mode, initialData, isPublishing, onSave, onPublish, 
                             disabled={isPublishing}
                             variant="ghost"
                             size="sm"
-                            className="text-slate-400 hover:text-white"
+                            className="text-slate-400 hover:text-white p-1.5 sm:p-2"
                         >
                             {isPublishing ? (
                                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -73,13 +73,16 @@ const PostEditorHeader = ({ mode, initialData, isPublishing, onSave, onPublish, 
                                 onPublish();
                                 setIsPublishMenuOpen(false);
                             }}
+                            size="sm"
+                            className="text-xs sm:text-sm px-2 sm:px-4"
                         >
                             {isPublishing ? (
-                                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                <Loader2 className="h-4 w-4 mr-1 sm:mr-2 animate-spin" />
                             ) : (
-                                <Send className="h-4 w-4 mr-2" />
+                                <Send className="h-4 w-4 mr-1 sm:mr-2" />
                             )}
-                            Update
+                            <span className="hidden sm:inline">Update</span>
+                            <span className="sm:hidden">✓</span>
                         </Button>
                     ) : (
                         <DropdownMenu
@@ -87,22 +90,23 @@ const PostEditorHeader = ({ mode, initialData, isPublishing, onSave, onPublish, 
                             onOpenChange={setIsPublishMenuOpen}
                         >
                             <DropdownMenuTrigger asChild>
-                                <Button variant={"primary"} disabled={isPublishing}>
+                                <Button variant={"primary"} disabled={isPublishing} size="sm" className="text-xs sm:text-sm px-2 sm:px-4">
                                     {isPublishing ? (
                                         <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                                     ) : (
-                                        <Send className="h-4 w-4 mr-2" />
+                                        <Send className="h-4 w-4 mr-1 sm:mr-2" />
                                     )}
-                                    Publish
+                                    <span className="hidden sm:inline">Publish</span>
+                                    <span className="sm:hidden">▼</span>
                                 </Button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" className="w-48 bg-black border-slate-700">
+                            <DropdownMenuContent align="end" className="w-40 sm:w-48 bg-black border-slate-700 text-sm">
                                 <DropdownMenuItem
                                     onClick={() => {
                                         onPublish();
                                         setIsPublishMenuOpen(false);
                                     }}
-                                    className="hover:bg-slate-800 cursor-pointer"
+                                    className="hover:bg-slate-800 text-xs sm:text-sm  cursor-pointer"
                                 >
                                     <Send className="h-4 w-4 mr-2" />
                                     Publish now
@@ -112,7 +116,7 @@ const PostEditorHeader = ({ mode, initialData, isPublishing, onSave, onPublish, 
                                         onSchedule();
                                         setIsPublishMenuOpen(false);
                                     }}
-                                    className="hover:bg-slate-800 cursor-pointer"
+                                    className="hover:bg-slate-800 cursor-pointer text-xs sm:text-sm"
                                 >
                                     <Calendar className="h-4 w-4 mr-2" />
                                     Schedule for later

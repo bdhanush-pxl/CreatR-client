@@ -140,7 +140,7 @@ function Dashboard() {
 
 
   return (
-    <div className="space-y-8 p-4 lg:p-8">
+    <div className="space-y-4 sm:space-y-6 lg:space-y-8 p-3 sm:p-4 lg:p-8">
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
@@ -160,16 +160,16 @@ function Dashboard() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 lg:gap-6">
         <Card className="card-glass">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-            <CardTitle className="text-sm font-medium text-slate-300">
+            <CardTitle className="text-xs sm:text-sm font-medium text-slate-300">
               Total Views
             </CardTitle>
             <Eye className="h-4 w-4 text-blue-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-white">
+            <div className="text-xl sm:text-2xl font-bold text-white">
               {stats.totalViews.toLocaleString()}
             </div>
             {stats.viewsGrowth > 0 && (
@@ -183,13 +183,13 @@ function Dashboard() {
 
         <Card className="card-glass">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-            <CardTitle className="text-sm font-medium text-slate-300">
+            <CardTitle className="text-xs sm:text-sm font-medium text-slate-300">
               Total Likes
             </CardTitle>
             <Heart className="h-4 w-4 text-red-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-white">
+            <div className="text-xl sm:text-2xl font-bold text-white">
               {stats.totalLikes.toLocaleString()}
             </div>
             {stats.likesGrowth > 0 && (
@@ -203,13 +203,13 @@ function Dashboard() {
 
         <Card className="card-glass">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-            <CardTitle className="text-sm font-medium text-slate-300">
+            <CardTitle className="text-xs sm:text-sm font-medium text-slate-300">
               Comments
             </CardTitle>
             <MessageCircle className="h-4 w-4 text-yellow-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-white">
+            <div className="text-xl sm:text-2xl font-bold text-white">
               {stats.totalComments.toLocaleString()}
             </div>
             {stats.commentsGrowth > 0 && (
@@ -223,13 +223,13 @@ function Dashboard() {
 
         <Card className="card-glass">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-            <CardTitle className="text-sm font-medium text-slate-300">
+            <CardTitle className="text-xs sm:text-sm font-medium text-slate-300">
               Followers
             </CardTitle>
             <Users className="h-4 w-4 text-green-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-white">
+            <div className="text-xl sm:text-2xl font-bold text-white">
               {stats.totalFollowers.toLocaleString()}
             </div>
             {stats.followersGrowth > 0 && (
@@ -243,7 +243,7 @@ function Dashboard() {
       </div>
 
       {/* Main Content Grid */}
-      <div className="grid lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
         {/* Recent Posts */}
         <div className="lg:col-span-2 space-y-6">
           <Card className="card-glass">
@@ -277,11 +277,11 @@ function Dashboard() {
                   </Link>
                 </div>
               ) : (
-                <div className="space-y-4">
+                <div className="space-y-2 sm:space-y-4">
                   {recentPosts.map((post) => (
                     <div
                       key={post._id}
-                      className="flex items-center justify-between p-4 bg-slate-800/30 hover:bg-slate-700/30 cursor-pointer rounded-lg transition-colors"
+                      className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 p-2 sm:p-4 bg-slate-800/30 hover:bg-slate-700/30 cursor-pointer rounded-lg transition-colors"
                       onClick={() =>
                         window.open(
                           `/dashboard/posts/${post._id}`,
@@ -289,11 +289,11 @@ function Dashboard() {
                         )
                       }
                     >
-                      <div className="flex-1">
-                        <h3 className="font-medium text-white truncate">
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-medium text-white truncate text-sm sm:text-base">
                           {post.title || "Untitled Post"}
                         </h3>
-                        <div className="flex items-center gap-4 mt-2">
+                        <div className="flex flex-wrap items-center gap-2 mt-1 sm:mt-2">
                           <Badge
                             variant={
                               post.status === "published"
@@ -312,7 +312,7 @@ function Dashboard() {
                           >
                             {post.status}
                           </Badge>
-                          <span className="text-sm text-slate-400">
+                          <span className="text-xs sm:text-sm text-slate-400 truncate">
                             {post.status === "published" && post.publishedAt
                               ? `Published ${formatTime(post.publishedAt)}`
                               : post.status === "draft"
@@ -324,17 +324,18 @@ function Dashboard() {
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-4 text-sm text-slate-400">
+                      <div className="flex items-center gap-2 sm:gap-4 text-xs sm:text-sm text-slate-400 flex-shrink-0">
                         <div className="flex items-center gap-1">
-                          <Eye className="h-4 w-4" />
-                          {post.viewCount || 0}
+                          <Eye className="h-3 w-3 sm:h-4 sm:w-4" />
+                          <span className="hidden sm:inline">{post.viewCount || 0}</span>
+                          <span className="sm:hidden">{post.viewCount || 0}</span>
                         </div>
                         <div className="flex items-center gap-1">
-                          <Heart className="h-4 w-4" />
+                          <Heart className="h-3 w-3 sm:h-4 sm:w-4" />
                           {post.likeCount || 0}
                         </div>
                         <div className="flex items-center gap-1">
-                          <MessageCircle className="h-4 w-4" />
+                          <MessageCircle className="h-3 w-3 sm:h-4 sm:w-4" />
                           {post.commentCount || 0}
                         </div>
                       </div>
@@ -379,11 +380,11 @@ function Dashboard() {
                   <p className="text-slate-400">No recent activity</p>
                 </div>
               ) : (
-                <div className="space-y-4">
+                <div className="space-y-2 sm:space-y-4">
                   {recentActivity.map((activity, index) => (
-                    <div key={index} className="flex items-start gap-3">
+                    <div key={index} className="flex items-start gap-2 sm:gap-3 pb-2 sm:pb-4 border-b border-slate-800 last:border-0">
                       <div
-                        className={`w-8 h-8 rounded-full flex items-center justify-center text-xs ${activity.type === "like"
+                        className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs flex-shrink-0 ${activity.type === "like"
                           ? "bg-red-500/20 text-red-300"
                           : activity.type === "comment"
                             ? "bg-blue-500/20 text-blue-300"
@@ -401,8 +402,8 @@ function Dashboard() {
                         )}
                       </div>
 
-                      <div className="flex-1">
-                        <p className="text-sm text-white">
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs sm:text-sm text-white break-words">
                           <span className="font-medium">{activity.user}</span>
                           {activity.type === "like" &&
                             ` liked your post "${activity.post}"`}
@@ -427,11 +428,11 @@ function Dashboard() {
             <CardHeader>
               <CardTitle className="text-white">Quick Actions</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-3">
-              <Link to="/dashboard/createPost">
+            <CardContent className="space-y-2 sm:space-y-3">
+              <Link to="/dashboard/createPost" className="w-full">
                 <Button
                   variant="ghost"
-                  className="w-full justify-start text-slate-300 hover:text-white hover:bg-slate-700/50"
+                  className="w-full justify-start text-xs sm:text-sm text-slate-300 hover:text-white hover:bg-slate-700/50 px-2 sm:px-4 py-1.5 sm:py-2"
                 >
                   <PlusCircle className="h-4 w-4 mr-2" />
                   Create New Post

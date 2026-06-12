@@ -77,8 +77,10 @@ const DailyViewsChart = ({ data, isLoading }) => {
     };
 
     return (
-        <div className="h-64">
+        <div className="w-full h-64 sm:h-80 overflow-x-auto">
+        <div className="min-w-min w-full h-64 sm:h-80">
             <Line data={chartData} options={options} />
+        </div>
         </div>
     )
 }

@@ -1,4 +1,4 @@
-import React, { useState ,useMemo } from 'react'
+import React, { useState, useMemo } from 'react'
 import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
 import { Button } from "./ui/button";
@@ -146,7 +146,7 @@ const PostEditorContent = ({ form, setQuillRef, onImageUpload }) => {
 
   return (
     <>
-      <main className="max-w-4xl mx-auto px-6 py-8">
+      <main className="max-w-4xl mx-auto px-3 sm:px-6 py-4 sm:py-8">
         <div className="space-y-5">
 
           {/* Featured Image */}
@@ -196,8 +196,8 @@ const PostEditorContent = ({ form, setQuillRef, onImageUpload }) => {
             <Input
               {...register("title")}
               placeholder="Post title..."
-              className="border-0 text-4xl font-bold bg-transparent placeholder:text-slate-500 text-white p-0 h-auto focus-visible:ring-0 focus-visible:ring-offset-0"
-              style={{ fontSize: "2.5rem", lineHeight: "1.2" }}
+              className="border-0 text-2xl sm:text-4xl font-bold bg-transparent placeholder:text-slate-500 text-white p-0 h-auto focus-visible:ring-0 focus-visible:ring-offset-0"
+              style={{ fontSize: "clamp(1.5rem, 8vw, 2.5rem)", lineHeight: "1.2" }}
             />
             {errors.title && (
               <p className="text-red-400 mt-2">{errors.title.message}</p>
@@ -218,7 +218,7 @@ const PostEditorContent = ({ form, setQuillRef, onImageUpload }) => {
                 Generate Content with AI
               </Button>
             ) : (
-              <div className="grid grid-cols-3 w-full gap-2">
+              <div className="grid grid-cols-1 sm:grid-cols-3 w-full gap-2">
                 {[
                   { type: "enhance", icon: Sparkles, color: "green" },
                   { type: "expand", icon: Plus, color: "blue" },
@@ -286,11 +286,16 @@ const PostEditorContent = ({ form, setQuillRef, onImageUpload }) => {
           border: none !important;
           padding: 0 0 1rem 0 !important;
           position: sticky !important;
-          top: 80px !important;
+          top: 60px !important;
           background: rgb(15, 23, 42) !important;
           z-index: 30 !important;
           border-radius: 8px !important;
           margin-bottom: 1rem !important;
+          overflow-x: auto !important;
+        }
+        .ql-toolbar button {
+          width: auto !important;
+          min-width: 28px !important;
         }
         .ql-container {
           border: none !important;

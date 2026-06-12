@@ -41,7 +41,7 @@ function Header(){
             <>
               {pathname === "/feed" && (
                 <Link to="/dashboard">
-                  <Button variant="outline" size="sm" className="hidden sm:flex hover:cursor-pointer hover:text-purple-300">
+                  <Button variant="outline" size="sm" className="flex hover:cursor-pointer hover:text-purple-300">
                     <LayoutDashboard className="h-4 w-4" />
                     <span className="hidden md:inline ml-2">Dashboard</span>
                   </Button>
